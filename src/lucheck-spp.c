@@ -86,7 +86,7 @@ char *err = strerror(errno);
 }
 
 /** Write a reject command to stdout */
-static void reject() {
+static void reject(void) {
     write(STDOUT_FILENO, CMD_REJECT, strlen(CMD_REJECT));
 }
 
