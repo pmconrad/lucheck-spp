@@ -27,7 +27,7 @@ make
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{QMAIL_DIR}/plugins
-install -m 0755 ,,build/src/%{name} $RPM_BUILD_ROOT%{QMAIL_DIR}/plugins
+install -m 0755 -s ,,build/src/%{name} $RPM_BUILD_ROOT%{QMAIL_DIR}/plugins
 
 %post
 cd %{QMAIL_DIR}/control
