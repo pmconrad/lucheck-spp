@@ -36,7 +36,6 @@
 
 #define ERR_MISSING_VARIABLE	"Missing environment variable "
 #define ERR_OPEN		"Can't open file "
-#define ERR_READ		"Can't read file "
 
 static const char *CMD_REJECT = "E551 Unknown user.\n";
 
@@ -66,21 +65,6 @@ char *err = strerror(errno);
     write(STDERR_FILENO, progname, strlen(progname));
     write(STDERR_FILENO, ": ", 2);
     write(STDERR_FILENO, ERR_OPEN, strlen(ERR_OPEN));
-    write(STDERR_FILENO, file, strlen(file));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, err, strlen(err));
-    write(STDERR_FILENO, "\n", 1);
-    exit(1);
-}
-
-static void err_reading(char *file, int fd) {
-char *err = strerror(errno);
-
-    if (fd >= 0) { close(fd); }
-
-    write(STDERR_FILENO, progname, strlen(progname));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, ERR_READ, strlen(ERR_READ));
     write(STDERR_FILENO, file, strlen(file));
     write(STDERR_FILENO, ": ", 2);
     write(STDERR_FILENO, err, strlen(err));

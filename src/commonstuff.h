@@ -46,6 +46,10 @@ extern char *progname, *debug;
  *  an error code */
 extern void err_memory(void);
 
+/** Write the error message for read errors on the given filename, close the
+ *  given file descriptor and exit with an error code */
+extern void err_reading(char *file, int fd);
+
 #endif /* _COMMONSTUFF_H_ */
 
 /* Do not change the following line:

@@ -22,6 +22,7 @@
 #include "commonstuff.h"
 
 #define ERR_MEMORY	"malloc failed: "
+#define ERR_READ	"Can't read "
 
 char *progname, *debug;
 
@@ -34,6 +35,23 @@ char *err = strerror(errno);
     write(STDERR_FILENO, ": ", 2);
     write(STDERR_FILENO, ERR_MEMORY, strlen(ERR_MEMORY));
     write(STDERR_FILENO, err, strlen(err));
+    exit(1);
+}
+
+/** Write the error message for read errors on the given filename, close the
+ *  given file descriptor and exit with an error code */
+void err_reading(char *file, int fd) {
+char *err = strerror(errno);
+
+    if (fd >= 0) { close(fd); }
+
+    write(STDERR_FILENO, progname, strlen(progname));
+    write(STDERR_FILENO, ": ", 2);
+    write(STDERR_FILENO, ERR_READ, strlen(ERR_READ));
+    write(STDERR_FILENO, file, strlen(file));
+    write(STDERR_FILENO, ": ", 2);
+    write(STDERR_FILENO, err, strlen(err));
+    write(STDERR_FILENO, "\n", 1);
     exit(1);
 }
 
