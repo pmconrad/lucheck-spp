@@ -25,6 +25,7 @@
 #include <fcntl.h>
 #include <pwd.h>
 #include <errno.h>
+#include <ctype.h>
 #include <cdb.h>
 #include "commonstuff.h"
 
@@ -248,7 +249,11 @@ struct stat statbuf;
 
     control = get_required_env(ENV_CONTROL);
     alias = get_required_env(ENV_ALIAS);
-    recipient = get_required_env(ENV_RCPT_TO);
+    recipient = strdup(get_required_env(ENV_RCPT_TO));
+    if (!recipient) { err_memory(); }
+    for (rlen = 0; recipient[rlen]; rlen++) {
+	recipient[rlen] = tolower(recipient[rlen]);
+    }
 
     DEBUG3("Started for '",recipient,"'")
 
@@ -265,7 +270,6 @@ struct stat statbuf;
 	}
     }
 
-    rlen = strlen(recipient);
     alen = strlen(alias);
 
     if (ffdb) {

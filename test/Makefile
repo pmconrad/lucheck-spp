@@ -41,6 +41,7 @@ run-tests: lucheck-spp cdbmake
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control1 ./test-error.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=. ./test-error.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=IhOpEtHaTsNoTaLoCaLuSeRnAmE@LoCaL.DoMaIn LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control3 LUCHECK_ALIAS=alias ./test-reject.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control2 LUCHECK_ALIAS=alias ./test-accept.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@virtual.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
@@ -51,13 +52,17 @@ run-tests: lucheck-spp cdbmake
 	SMTPRCPTTO=`id -un`@local.domain LUCHECK_CONTROL=control3 LUCHECK_ALIAS=alias ./test-accept.sh
 	SMTPRCPTTO=`id -un`@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@ThAtS.A.SuB.DoMaIn LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
 	SMTPRCPTTO=`id -un`-test@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
 	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
 	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
+	SMTPRCPTTO=ThAtSaFaStFoRwArDaLiAs LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
 	SMTPRCPTTO=thatsalocalalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
 	SMTPRCPTTO=fastforwardalias@local.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-reject.sh
 	SMTPRCPTTO=fastforwardalias@specific.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
+	SMTPRCPTTO=FaStFoRwArDaLiAs@SpEcIfIc.sUb.DoMaIn LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@aliased.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
+	SMTPRCPTTO=IhOpEtHaTsNotAlOcAlUseRnaMe@AlIaSeD.sUb.dOmAin LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
 	mkdir -p control4
 	echo short.name >control4/locals
 	echo a.looooong.name >>control4/locals
