@@ -1,0 +1,39 @@
+# lucheck-spp - A qmail-spp plugin implementing greylisting
+
+#   Copyright (C) 2004 Peter Conrad <conrad@tivano.de>
+
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License (version 2) as
+#   published by the Free Software Foundation.
+
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+CDB=../cdb-0.75
+
+#CFLAGS=-O6 -Wall -I$(CDB)
+CFLAGS=-g -Wall -I$(CDB)
+LDFLAGS=-g
+
+all: lucheck-spp
+
+$(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a $(CDB)/alloc.a $(CDB)/buffer.a \
+$(CDB)/uint32.h:
+	make -C $(CDB)
+
+lucheck-spp.o: lucheck-spp.c $(CDB)/uint32.h
+
+lucheck-spp: lucheck-spp.o $(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a \
+	     $(CDB)/alloc.a $(CDB)/buffer.a
+
+clean:
+	rm -f lucheck-spp *.o
+
+# Do not change the following line:
+# arch-tag: 1f29998d-0e10-412a-893e-ffcbc78e19da
