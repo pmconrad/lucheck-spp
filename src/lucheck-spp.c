@@ -33,6 +33,7 @@
 #define	ENV_ALIAS	"LUCHECK_ALIAS"
 #define	ENV_FFDB	"LUCHECK_FFDB"
 #define	ENV_DEBUG	"LUCHECK_DEBUG"
+#define	ENV_VERBOSE	"LUCHECK_VERBOSE"
 
 #define ERR_MISSING_VARIABLE	"Missing environment variable "
 #define ERR_OPEN		"Can't open file "
@@ -222,8 +223,10 @@ struct stat statbuf;
 	cmd_reject = strdup(CMD_REJECT);
 	if (!cmd_reject) { err_memory(); }
 	cmd_reject[1] = '4';
+	verbose = debug;
     } else {
 	cmd_reject = (char *) CMD_REJECT;
+	debug = getenv(ENV_VERBOSE);
     }
 
     if (getenv(ENV_RELAYCLIENT)) {
@@ -323,7 +326,7 @@ struct stat statbuf;
 	if (at) { *at = 0; }
     } while (at);
 
-    DEBUG3("'",recipient,"' doesn't seem to be local - REJECTING.")
+    VERBOSE3("'",recipient,"' doesn't seem to be local - REJECTING.")
 
     reject();
 

@@ -73,6 +73,9 @@ If the environment variable "LUCHECK_DEBUG" is set (to any value) some
 debugging output will be sent to wherever your qmail-smtpd logs are written.
 Also, if the recipient is rejected, it will be rejected with a temporary (4xy)
 SMTP response code instead of a permanent (5xy) code.
+</p><p>
+If the environment variable "LUCHECK_VERBOSE" is set (to any value), rejected
+addresses will be logged.
 </p>
 
 <h2>Status</h2>
@@ -137,14 +140,14 @@ well.
 
 <li>Modify whatever process you use for running qmail-smtpd to set the
     environment variables "LUCHECK_CONTROL", "LUCHECK_ALIASDIR" and optionally
-    "LUCHECK_FFDB" and "LUCHECK_DEBUG" to appropriate values.
+    "LUCHECK_FFDB", "LUCHECK_DEBUG" or "LUCHECK_VERBOSE" to appropriate values.
 <br>
     For example:
 <pre>
      LUCHECK_CONTROL=/var/qmail/control/locals
      LUCHECK_ALIASDIR=/var/qmail/alias
-     LUCHECK_DEBUG=yes
-     export LUCHECK_CONTROL LUCHECK_ALIASDIR LUCHECK_DEBUG
+     LUCHECK_VERBOSE=yes
+     export LUCHECK_CONTROL LUCHECK_ALIASDIR LUCHECK_VERBOSE
      tcpserver -R -v -x /etc/tcprules.smtpd.cdb -c 20 0 smtp qmail-smtpd 2>&1
 </pre>
     Don't forget to restart the service if required!

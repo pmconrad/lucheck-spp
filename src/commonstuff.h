@@ -25,7 +25,7 @@
 #define ENV_RCPT_TO		"SMTPRCPTTO"
 #define ENV_RELAYCLIENT		"RELAYCLIENT"
 
-extern char *progname, *debug;
+extern char *progname, *debug, *verbose;
 
 #define DEBUG4(m1,m2,m3,m4)	\
     if (debug) { \
@@ -41,6 +41,21 @@ extern char *progname, *debug;
 #define DEBUG(m)		DEBUG4(m,"","","")
 #define DEBUG2(m1,m2)		DEBUG4(m1,m2,"","")
 #define DEBUG3(m1,m2,m3)	DEBUG4(m1,m2,m3,"")
+
+#define VERBOSE4(m1,m2,m3,m4)	\
+    if (verbose) { \
+	write(STDERR_FILENO, progname, strlen(progname)); \
+	write(STDERR_FILENO, ": ", 2); \
+	write(STDERR_FILENO, m1, strlen(m1)); \
+	write(STDERR_FILENO, m2, strlen(m2)); \
+	write(STDERR_FILENO, m3, strlen(m3)); \
+	write(STDERR_FILENO, m4, strlen(m4)); \
+	write(STDERR_FILENO, "\n", 1); \
+    }
+
+#define VERBOSE(m)		VERBOSE4(m,"","","")
+#define VERBOSE2(m1,m2)		VERBOSE4(m1,m2,"","")
+#define VERBOSE3(m1,m2,m3)	VERBOSE4(m1,m2,m3,"")
 
 /** Write the error message for memory problems to stderr and exit with
  *  an error code */

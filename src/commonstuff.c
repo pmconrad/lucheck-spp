@@ -24,7 +24,7 @@
 #define ERR_MEMORY	"malloc failed: "
 #define ERR_READ	"Can't read "
 
-char *progname, *debug;
+char *progname, *debug = NULL, *verbose = NULL;
 
 /** Write the error message for memory problems to stderr and exit with
  *  an error code */
