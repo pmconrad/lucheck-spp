@@ -1,0 +1,17 @@
+
+thatsafastforwardalias: root@local.domain
+
+thatsalocalinclude: :include:includefile
+
+thatsalocalpipe: |/bin/false
+
+thatsalocallist: thatsalocalpipe@local.domain thatsalocalalias@local.domain
+
+owner-thatsalocallist: root@local.domain
+
+fastforwardalias@specific.sub.domain: root@local.domain
+
+@aliased.sub.domain: root@local.domain
+
+# Do not change the following line:
+# arch-tag: ea0c914a-6b82-4d3b-b0d8-e923f9c001f5

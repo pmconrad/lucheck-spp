@@ -1,0 +1,12 @@
+
+all: build test
+
+build:
+	make -C src
+
+test: build
+	make -C test
+
+# Don't change the following line!
+# arch-tag: a778c0ce-368f-4d2f-a6fd-da5b5eea987a
+
