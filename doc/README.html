@@ -145,7 +145,7 @@ well.
 <pre>
      LUCHECK_ALIASDIR=/var/qmail/alias
      LUCHECK_VERBOSE=yes
-     export LUCHECK_CONTROL LUCHECK_ALIASDIR LUCHECK_VERBOSE
+     export LUCHECK_ALIASDIR LUCHECK_VERBOSE
      tcpserver -R -v -x /etc/tcprules.smtpd.cdb -c 20 0 smtp qmail-smtpd 2>&1
 </pre>
     Don't forget to restart the service if required!
