@@ -18,6 +18,7 @@
 
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 #include "commonstuff.h"
 
 #define ERR_MEMORY	"malloc failed: "
@@ -26,7 +27,7 @@ char *progname, *debug;
 
 /** Write the error message for memory problems to stderr and exit with
  *  an error code */
-void err_memory() {
+void err_memory(void) {
 char *err = strerror(errno);
 
     write(STDERR_FILENO, progname, strlen(progname));

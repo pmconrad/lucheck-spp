@@ -17,8 +17,8 @@
 
 CDB=../cdb-0.75
 
-#CFLAGS=-O6 -Wall -I$(CDB)
-CFLAGS=-g -Wall -I$(CDB)
+#CFLAGS=-O6 -Wall -pedantic -Wstrict-prototypes -I$(CDB)
+CFLAGS=-g -Wall -pedantic -Wstrict-prototypes -I$(CDB)
 LDFLAGS=-g
 
 all: lucheck-spp

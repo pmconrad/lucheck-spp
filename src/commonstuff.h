@@ -44,7 +44,7 @@ extern char *progname, *debug;
 
 /** Write the error message for memory problems to stderr and exit with
  *  an error code */
-extern void err_memory();
+extern void err_memory(void);
 
 #endif /* _COMMONSTUFF_H_ */
 
