@@ -26,29 +26,37 @@ cdbmake:
 	ln -sf ../cdb-0.75/cdbmake
 
 run-tests: lucheck-spp cdbmake
-	echo local.domain >locals
-	echo .sub.domain >>locals
-	touch notlocals
+	mkdir -p control1
+	echo local.domain >control1/locals
+	echo .sub.domain >>control1/locals
+	echo virtual.domain >control1/virtualdomains
+	mkdir -p control2
+	touch control2/locals
+	mkdir -p control3
+	echo local.domain >control3/me
 	mkdir -p alias
 	touch alias/.qmail-thatsalocalalias
 	( echo '+22,4:thatsafastforwardalias->yeah'; echo "" ) | \
 	  ./cdbmake alias.cdb alias.tmp
 	./test-error.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain ./test-error.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_LOCALS=locals ./test-error.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_LOCALS=nosuchfile ./test-error.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-reject.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_LOCALS=notlocals LUCHECK_ALIAS=alias ./test-accept.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias RELAYCLIENT= ./test-accept.sh
-	SMTPRCPTTO=`id -un` LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-accept.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-reject.sh
-	SMTPRCPTTO=`id -un`@local.domain LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-accept.sh
-	SMTPRCPTTO=`id -un`@thats.a.sub.domain LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-accept.sh
-	SMTPRCPTTO=ihopethatsnotalocalusername@thats.a.sub.domain LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-reject.sh
-	SMTPRCPTTO=`id -un`-test@thats.a.sub.domain LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-accept.sh
-	SMTPRCPTTO=thatsafastforwardalias LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias ./test-reject.sh
-	SMTPRCPTTO=thatsafastforwardalias LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
-	SMTPRCPTTO=thatsalocalalias LUCHECK_LOCALS=locals LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control1 ./test-error.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=. ./test-error.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control3 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control2 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@virtual.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias RELAYCLIENT= ./test-accept.sh
+	SMTPRCPTTO=`id -un` LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=`id -un`@local.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=`id -un`@local.domain LUCHECK_CONTROL=control3 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=`id -un`@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=`id -un`-test@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
+	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
+	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
+	SMTPRCPTTO=thatsalocalalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
 
 clean:
 	rm -rf lucheck-spp locals notlocals alias alias.cdb alias.tmp

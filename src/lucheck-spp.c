@@ -30,7 +30,7 @@
 
 #define	ENV_RELAYCLIENT	"RELAYCLIENT"
 #define ENV_RCPT_TO	"SMTPRCPTTO"
-#define	ENV_LOCALS	"LUCHECK_LOCALS"
+#define	ENV_CONTROL	"LUCHECK_CONTROL"
 #define	ENV_ALIAS	"LUCHECK_ALIAS"
 #define	ENV_FFDB	"LUCHECK_FFDB"
 
@@ -105,16 +105,93 @@ static void reject() {
     write(STDOUT_FILENO, CMD_REJECT, strlen(CMD_REJECT));
 }
 
+/** Check if the given domain is in the virtualdomains file.
+ *  Return the prefix if yes, NULL otherwise.
+ */
+static char *is_virtual(char *domain, char *control) {
+char *line, *dot, *vdomains, *success = NULL;
+int f, eof = 0, dlen = strlen(domain), rc, i, colon;
+
+    vdomains = malloc(strlen(control) + 15);
+    if (!vdomains) { err_memory(); }
+    strcpy(vdomains, control);
+    strcat(vdomains, "/virtualdomains");
+
+    line = malloc(dlen + 10);
+    if (!line) { err_memory(); }
+
+    f = open(vdomains, O_RDONLY);
+    if (f < 0) {
+	if (errno != ENOENT) {
+	   err_open(vdomains);
+	}
+    } else {
+	while (!eof && !success) {
+	    i = 0;
+	    colon = 0;
+	    while (!eof && line[i] != '\n') {
+		rc = read(f, &line[i], 1);
+		if (rc < 0) { err_reading(vdomains, f); }
+		if (rc == 0) { eof = 1; i--; }
+		else if (line[i] != '\n' && i < dlen + 2) {
+		    if (line[i] == ':') { colon = i; }
+		    i++;
+		}
+	    }
+	    if (line[colon] == ':' && line[i] == '\n' && colon <= dlen) {
+		line[colon] = 0;
+		line[i] = 0;
+		if (!strcmp(line, domain)) {
+		    if (!(success = strdup(&line[colon + 1]))) {
+			err_memory();
+		    }
+		}
+		if (line[0] == '.') {
+		    dot = domain;
+		    while (!success && (dot = index(dot, '.'))) {
+			if (!strcmp(line, dot)) {
+			    if (!(success = strdup(&line[colon + 1]))) {
+				err_memory();
+			    }
+			} else {
+			    dot++;
+			}
+		    }
+		}
+	    }
+	}
+	close(f);
+    }
+
+    free(line);
+    free(vdomains);
+    return success;
+}
+
 /** Check if the given domain is in the locals file */
-static int is_local(char *domain, char *locals) {
-char *line, *dot;
+static int is_local(char *domain, char *control) {
+char *line, *dot, *locals;
 int f, eof = 0, dlen = strlen(domain), rc, i, success = 0;
+
+    locals = malloc(strlen(control) + 7);
+    if (!locals) { err_memory(); }
+    strcpy(locals, control);
+    strcat(locals, "/locals");
 
     line = malloc(dlen + 10);
     if (!line) { err_memory(); }
 
     f = open(locals, O_RDONLY);
-    if (f < 0) { err_open(locals); }
+    if (f < 0) {
+	if (errno != ENOENT) {
+	    err_open(locals);
+	}
+	strcpy(&locals[strlen(control)], "/me");
+	f = open(locals, O_RDONLY);
+	if (f < 0) {
+	    err_open(locals);
+	}
+    }
 
     while (!eof && !success) {
 	i = 0;
@@ -139,13 +216,14 @@ int f, eof = 0, dlen = strlen(domain), rc, i, success = 0;
 
     close(f);
     free(line);
+    free(locals);
     return success;
 }
 
 /** main function of the lucheck plugin */
 int main(int argc, char **argv) {
 char *ffdb = getenv(ENV_FFDB), *recipient;
-char *locals, *alias, *at, *dotqmail;
+char *control, *alias, *at, *dotqmail;
 int i, rc, alen, rlen;
 struct cdb cdb;
 struct passwd *pw;
@@ -155,7 +233,7 @@ struct stat statbuf;
 
     if (getenv(ENV_RELAYCLIENT)) { exit(0); }
 
-    locals = get_required_env(ENV_LOCALS);
+    control = get_required_env(ENV_CONTROL);
     alias = get_required_env(ENV_ALIAS);
     recipient = get_required_env(ENV_RCPT_TO);
 
@@ -163,7 +241,7 @@ struct stat statbuf;
     if (at) {
 	char *domain = &at[1];
 	*at = 0;
-	if (!is_local(domain, locals)) {
+	if (is_virtual(domain, control) || !is_local(domain, control)) {
 	    exit(0);
 	}
     }
