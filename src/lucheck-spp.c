@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
 char *ffdb = getenv(ENV_FFDB), *recipient;
 char *alias, *at, *dotqmail;
 int i, rc, alen, rlen;
-struct cdb cdb;
+struct cdb cdb = {0};
 struct passwd *pw;
 struct stat statbuf;
 
