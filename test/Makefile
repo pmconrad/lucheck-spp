@@ -29,7 +29,7 @@ run-tests: lucheck-spp cdbmake
 	mkdir -p control1
 	echo local.domain >control1/locals
 	echo .sub.domain >>control1/locals
-	echo virtual.domain >control1/virtualdomains
+	echo virtual.domain:v >control1/virtualdomains
 	mkdir -p control2
 	touch control2/locals
 	mkdir -p control3
@@ -57,6 +57,10 @@ run-tests: lucheck-spp cdbmake
 	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
 	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
 	SMTPRCPTTO=thatsalocalalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
+	mkdir -p control4
+	echo short.name >control4/locals
+	echo a.looooong.name >>control4/locals
+	SMTPRCPTTO=ihopethatsnotalocalusername@test.name LUCHECK_CONTROL=control4 LUCHECK_ALIAS=alias ./test-accept.sh
 
 clean:
 	rm -rf lucheck-spp locals notlocals alias alias.cdb alias.tmp

@@ -116,16 +116,23 @@ int f, eof = 0, dlen = strlen(domain), rc, i, colon;
 	while (!eof && !success) {
 	    i = 0;
 	    colon = 0;
-	    while (!eof && line[i] != '\n') {
+	    do 	{
+		if (i > dlen + 2) {
+		    /* No need to remember the whole line */
+		    i--;
+		}
 		rc = read(f, &line[i], 1);
 		if (rc < 0) { err_reading(vdomains, f); }
-		if (rc == 0) { eof = 1; i--; }
-		else if (line[i] != '\n' && i < dlen + 2) {
+		if (rc == 0) {
+		    eof = 1;
+		    line[i] = 0;
+		} else {
 		    if (line[i] == ':') { colon = i; }
 		    i++;
 		}
-	    }
-	    if (line[colon] == ':' && line[i] == '\n' && colon <= dlen) {
+	    } while (!eof && line[i - 1] != '\n');
+	    if (line[colon] == ':' && i > 0
+		    && (eof || line[--i] == '\n') && colon <= dlen) {
 		line[colon] = 0;
 		line[i] = 0;
 		if (!strcmp(line, domain)) {
@@ -182,13 +189,21 @@ int f, eof = 0, dlen = strlen(domain), rc, i, success = 0;
 
     while (!eof && !success) {
 	i = 0;
-	while (!eof && line[i] != '\n') {
+	do {
+	    if (i > dlen + 2) {
+		/* No need to remember the whole line */
+		i--;
+	    }
 	    rc = read(f, &line[i], 1);
 	    if (rc < 0) { err_reading(locals, f); }
-	    if (rc == 0) { eof = 1; i--; }
-	    else if (line[i] != '\n' && i < dlen + 2) { i++; }
-	}
-	if (line[i] == '\n' && i <= dlen) {
+	    if (rc == 0) {
+		eof = 1;
+		line[i] = 0;
+	    } else {
+		i++;
+	    }
+	} while (!eof && line[i - 1] != '\n');
+	if (i > 0 && (eof || line[--i] == '\n') && i <= dlen) {
 	    line[i] = 0;
 	    if (!strcmp(line, domain)) { success = 1; }
 	    if (line[0] == '.') {
