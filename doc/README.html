@@ -29,9 +29,10 @@ are copyright by D. J. Bernstein, see the README in that subdirectory.
 </p>
 </blockquote>
 <p>
-qmail-spp (<a href="http://qmail-spp.sf.net/">http://qmail-spp.sf.net/</a>) is a patch for D. J. Bernstein's 
-"<a href="http://qmail.org">qmail</a>" MTA package. The patch enables "plugin" programs to be run at various
-stages during an SMTP protocol exchange.
+qmail-spp (<a href="http://qmail-spp.sf.net/">http://qmail-spp.sf.net/</a>) is
+a patch for D. J. Bernstein's "<a href="http://qmail.org">qmail</a>" MTA
+package. The patch enables "plugin" programs to be run at various stages
+during an SMTP protocol exchange.
 </p><p>
 This package implements a qmail-spp-style plugin that performs certain checks
 on the "user" part of evelope recipient addresses.
@@ -67,6 +68,11 @@ Repeat the following steps:
 <p>
 If the address has not yet been accepted at this point, reject it with an
 error message.
+</p><p>
+If the environment variable "LUCHECK_DEBUG" is set (to any value) some 
+debugging output will be sent to wherever your qmail-smtpd logs are written.
+Also, if the recipient is rejected, it will be rejected with a temporary (4xy)
+SMTP response code instead of a permanent (5xy) code.
 </p>
 
 <h2>Status</h2>
@@ -106,10 +112,6 @@ make yourself. Basically, you'll have to perform the steps enumerated below.
 For RPM-based systems, a .spec file is provided (assuming a qmail installation
 under /var/qmail). The RPM-based installation requires some manual work as
 well.
-</p><p>
-Note: If you're upgrading your RPM-based installation with "rpm -U" you'll
-have to manually edit "control/smtpplugins" afterwards. For some reason
-rpm executes the "preun" script *after* the "post" script...
 </p>
 <ol>
 <li>As has been said above, this program is a *plugin* for a Qmail installation
@@ -132,13 +134,14 @@ rpm executes the "preun" script *after* the "post" script...
 
 <li>Modify whatever process you use for running qmail-smtpd to set the
     environment variables "LUCHECK_CONTROL", "LUCHECK_ALIASDIR" and optionally
-    "LUCHECK_FFDB" to appropriate values.
+    "LUCHECK_FFDB" and "LUCHECK_DEBUG" to appropriate values.
 <br>
     For example:
 <pre>
      LUCHECK_CONTROL=/var/qmail/control/locals
      LUCHECK_ALIASDIR=/var/qmail/alias
-     export LUCHECK_CONTROL LUCHECK_ALIASDIR
+     LUCHECK_DEBUG=yes
+     export LUCHECK_CONTROL LUCHECK_ALIASDIR LUCHECK_DEBUG
      tcpserver -R -v -x /etc/tcprules.smtpd.cdb -c 20 0 smtp qmail-smtpd 2>&1
 </pre>
     Don't forget to restart the service if required!
