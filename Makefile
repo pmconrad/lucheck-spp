@@ -13,7 +13,7 @@ dist: configure $(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz
 
 $(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz: src/*.[ch] src/Makefile doc/COPYING \
 	  doc/README* doc/TODO test/*.sh test/Makefile Makefile* cdb-0.75 \
-	  lucheck-spp.spec
+	  test/aliases.cdb lucheck-spp.spec
 	ln -s . $(PROJECT)-$(VERSION)
 	tar cvfz $@ `for i in $^; do echo $(PROJECT)-$(VERSION)/$$i; done`
 	rm $(PROJECT)-$(VERSION)
