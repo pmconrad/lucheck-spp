@@ -33,11 +33,13 @@
 #define	ENV_FFDB	"LUCHECK_FFDB"
 #define	ENV_DEBUG	"LUCHECK_DEBUG"
 
-#define CMD_REJECT	"E451 Unknown user.\n"
-
 #define ERR_MISSING_VARIABLE	"Missing environment variable "
 #define ERR_OPEN		"Can't open file "
 #define ERR_READ		"Can't read file "
+
+static const char *CMD_REJECT = "E551 Unknown user.\n";
+
+static char *cmd_reject;
 
 /** Retrieve the environment variable with the given name. If there is no
  *  such variable, write an error message to stderr and exit with a non-zero
@@ -87,7 +89,7 @@ char *err = strerror(errno);
 
 /** Write a reject command to stdout */
 static void reject(void) {
-    write(STDOUT_FILENO, CMD_REJECT, strlen(CMD_REJECT));
+    write(STDOUT_FILENO, cmd_reject, strlen(cmd_reject));
 }
 
 /** Check if the given domain is in the virtualdomains file.
@@ -216,18 +218,35 @@ struct stat statbuf;
 
     progname = argv[0];
     debug = getenv(ENV_DEBUG);
+    if (debug) {
+	cmd_reject = strdup(CMD_REJECT);
+	if (!cmd_reject) { err_memory(); }
+	cmd_reject[1] = '4';
+    } else {
+	cmd_reject = (char *) CMD_REJECT;
+    }
 
-    if (getenv(ENV_RELAYCLIENT)) { exit(0); }
+    if (getenv(ENV_RELAYCLIENT)) {
+	DEBUG("RELAYCLIENT set - exiting")
+	exit(0);
+    }
 
     control = get_required_env(ENV_CONTROL);
     alias = get_required_env(ENV_ALIAS);
     recipient = get_required_env(ENV_RCPT_TO);
 
+    DEBUG3("Started for '",recipient,"'")
+
     at = index(recipient, '@');
     if (at) {
 	char *domain = &at[1];
 	*at = 0;
-	if (is_virtual(domain, control) || !is_local(domain, control)) {
+	if (is_virtual(domain, control)) {
+	    DEBUG3("'",recipient,"' is virtual - exiting.")
+	    exit(0);
+	}
+	if (!is_local(domain, control)) {
+	    DEBUG3("'",recipient,"' is not local - exiting.")
 	    exit(0);
 	}
     }
@@ -236,6 +255,7 @@ struct stat statbuf;
     alen = strlen(alias);
 
     if (ffdb) {
+	DEBUG4("Checking alias DB '",ffdb,"' for ",recipient)
 	i = open(ffdb, O_RDONLY);
 	if (i < 0) { err_open(ffdb); }
 	cdb_init(&cdb, i);
@@ -243,7 +263,10 @@ struct stat statbuf;
 	if (rc == -1) { err_reading(ffdb, i); }
 	cdb_free(&cdb);
 	close(i);
-	if (rc) { exit(0); }
+	if (rc) {
+	    DEBUG3("Alias '",recipient,"' found - exiting.")
+	    exit(0);
+	}
     }
 
     dotqmail = malloc(alen + 1 + 7 + rlen + 1);
@@ -255,9 +278,15 @@ struct stat statbuf;
     strcat(dotqmail, recipient);
     recipient = &dotqmail[alen + 1 + 7];
     do {
+	DEBUG3("Looking up local user '",recipient,"'")
 	pw = getpwnam(recipient);
-	if (pw) { exit(0); }
+	if (pw) {
+	    DEBUG3("Local user '",recipient,"' found - exiting.")
+	    exit(0);
+	}
+	DEBUG3("Checking ~alias for '",recipient,"'")
 	if (!stat(dotqmail, &statbuf)) {
+	    DEBUG3("Alias file '",dotqmail,"' found - exiting.")
 	    exit(0);
 	}
 	if (errno != ENOENT) {
@@ -267,7 +296,13 @@ struct stat statbuf;
 	if (at) { *at = 0; }
     } while (at);
 
+    DEBUG3("'",recipient,"' doesn't seem to be local - REJECTING.")
+
     reject();
+
+    /* We should free(cmd_reject) here in debug mode.
+     * We don't, on purpose.
+     */
 
     return 0;
 }

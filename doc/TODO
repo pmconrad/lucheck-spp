@@ -1,5 +1,3 @@
- - Add debugging output + mode
  - Improve handling of -extension wrt dot-qmail
  - More tests
- - Check control/virtualdomains as well...
 
