@@ -17,7 +17,6 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -27,21 +26,18 @@
 #include <pwd.h>
 #include <errno.h>
 #include <cdb.h>
+#include "commonstuff.h"
 
-#define	ENV_RELAYCLIENT	"RELAYCLIENT"
-#define ENV_RCPT_TO	"SMTPRCPTTO"
 #define	ENV_CONTROL	"LUCHECK_CONTROL"
 #define	ENV_ALIAS	"LUCHECK_ALIAS"
 #define	ENV_FFDB	"LUCHECK_FFDB"
+#define	ENV_DEBUG	"LUCHECK_DEBUG"
 
 #define CMD_REJECT	"E451 Unknown user.\n"
-
-char *progname;
 
 #define ERR_MISSING_VARIABLE	"Missing environment variable "
 #define ERR_OPEN		"Can't open file "
 #define ERR_READ		"Can't read file "
-#define ERR_MEMORY		"Can't allocate memory: "
 
 /** Retrieve the environment variable with the given name. If there is no
  *  such variable, write an error message to stderr and exit with a non-zero
@@ -84,17 +80,6 @@ char *err = strerror(errno);
     write(STDERR_FILENO, ERR_READ, strlen(ERR_READ));
     write(STDERR_FILENO, file, strlen(file));
     write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, err, strlen(err));
-    write(STDERR_FILENO, "\n", 1);
-    exit(1);
-}
-
-static void err_memory() {
-char *err = strerror(errno);
-
-    write(STDERR_FILENO, progname, strlen(progname));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, ERR_MEMORY, strlen(ERR_MEMORY));
     write(STDERR_FILENO, err, strlen(err));
     write(STDERR_FILENO, "\n", 1);
     exit(1);
@@ -230,6 +215,7 @@ struct passwd *pw;
 struct stat statbuf;
 
     progname = argv[0];
+    debug = getenv(ENV_DEBUG);
 
     if (getenv(ENV_RELAYCLIENT)) { exit(0); }
 

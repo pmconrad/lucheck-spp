@@ -29,7 +29,8 @@ $(CDB)/uint32.h:
 
 lucheck-spp.o: lucheck-spp.c $(CDB)/uint32.h
 
-lucheck-spp: lucheck-spp.o $(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a \
+lucheck-spp: lucheck-spp.o commonstuff.o \
+	     $(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a \
 	     $(CDB)/alloc.a $(CDB)/buffer.a
 
 clean:
