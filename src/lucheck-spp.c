@@ -255,7 +255,6 @@ struct stat statbuf;
     at = index(recipient, '@');
     if (at) {
 	char *domain = &at[1];
-	*at = 0;
 	if (is_virtual(domain, control)) {
 	    DEBUG3("'",recipient,"' is virtual - exiting.")
 	    exit(0);
@@ -270,18 +269,43 @@ struct stat statbuf;
     alen = strlen(alias);
 
     if (ffdb) {
+	char *helper = (char *) malloc(rlen + 5);
+	if (!helper) { err_memory(); }
+	helper[0] = ':';
+	strcpy(&helper[1], recipient);
+	if (!at) {
+	    strcat(helper, "@");
+	}
 	DEBUG4("Checking alias DB '",ffdb,"' for ",recipient)
 	i = open(ffdb, O_RDONLY);
 	if (i < 0) { err_open(ffdb); }
 	cdb_init(&cdb, i);
-	rc = cdb_find(&cdb, recipient, rlen);
+	rc = cdb_find(&cdb, helper, strlen(helper));
 	if (rc == -1) { err_reading(ffdb, i); }
+	if (!rc && at) {
+	    helper[at - recipient + 2] = 0;
+	    DEBUG4("Checking alias DB '",ffdb,"' for ",&helper[1])
+	    rc = cdb_find(&cdb, helper, strlen(helper));
+	    if (rc == -1) { err_reading(ffdb, i); }
+	}
+	if (!rc && at) {
+	    strcpy(&helper[1], at);
+	    DEBUG4("Checking alias DB '",ffdb,"' for ",&helper[1])
+	    rc = cdb_find(&cdb, helper, strlen(helper));
+	    if (rc == -1) { err_reading(ffdb, i); }
+	}
 	cdb_free(&cdb);
 	close(i);
 	if (rc) {
-	    DEBUG3("Alias '",recipient,"' found - exiting.")
+	    DEBUG3("Alias '",&helper[1],"' found - exiting.")
+	    free(helper);
 	    exit(0);
 	}
+	free(helper);
+    }
+
+    if (at) {
+	*at = 0;
     }
 
     dotqmail = malloc(alen + 1 + 7 + rlen + 1);

@@ -36,8 +36,6 @@ run-tests: lucheck-spp cdbmake
 	echo local.domain >control3/me
 	mkdir -p alias
 	touch alias/.qmail-thatsalocalalias
-	( echo '+22,4:thatsafastforwardalias->yeah'; echo "" ) | \
-	  ./cdbmake alias.cdb alias.tmp
 	./test-error.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain ./test-error.sh
 	SMTPRCPTTO=ihopethatsnotalocalusername@local.domain LUCHECK_CONTROL=control1 ./test-error.sh
@@ -55,15 +53,18 @@ run-tests: lucheck-spp cdbmake
 	SMTPRCPTTO=ihopethatsnotalocalusername@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
 	SMTPRCPTTO=`id -un`-test@thats.a.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-accept.sh
 	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias ./test-reject.sh
-	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
-	SMTPRCPTTO=thatsalocalalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=alias.cdb ./test-accept.sh
+	SMTPRCPTTO=thatsafastforwardalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
+	SMTPRCPTTO=thatsalocalalias LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
+	SMTPRCPTTO=fastforwardalias@local.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-reject.sh
+	SMTPRCPTTO=fastforwardalias@specific.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
+	SMTPRCPTTO=ihopethatsnotalocalusername@aliased.sub.domain LUCHECK_CONTROL=control1 LUCHECK_ALIAS=alias LUCHECK_FFDB=aliases.cdb ./test-accept.sh
 	mkdir -p control4
 	echo short.name >control4/locals
 	echo a.looooong.name >>control4/locals
 	SMTPRCPTTO=ihopethatsnotalocalusername@test.name LUCHECK_CONTROL=control4 LUCHECK_ALIAS=alias ./test-accept.sh
 
 clean:
-	rm -rf lucheck-spp locals notlocals alias alias.cdb alias.tmp
+	rm -rf lucheck-spp control[1234]
 
 # Do not change the following line:
 # arch-tag: c23deea8-3210-4fc7-97ff-247520c2bbfa
