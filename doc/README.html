@@ -44,10 +44,9 @@ on the "user" part of evelope recipient addresses.
 First, the plugin checks if the recipient address should be checked at all
 by looking at the "RELAYCLIENT" environment variable and comparing the
 <em>domain</em> part of the address to the domains listed in
-"$LUCHECK_CONTROL/locals" (which should contain the full path to your "control"
-directory). If not, it exits immediately.
+"control/locals". If not, it exits immediately.
 </p><p>
-If "$LUCHECK_CONTROL/virtualdomains" exists and <em>domain</em> is listed in it,
+If "control/virtualdomains" exists and <em>domain</em> is listed in it,
 the plugin exits as well (assuming the local user for handling the virtual
 domain is set up properly).
 </p><p>
@@ -139,12 +138,11 @@ well.
 </li>
 
 <li>Modify whatever process you use for running qmail-smtpd to set the
-    environment variables "LUCHECK_CONTROL", "LUCHECK_ALIASDIR" and optionally
-    "LUCHECK_FFDB", "LUCHECK_DEBUG" or "LUCHECK_VERBOSE" to appropriate values.
+    environment variable "LUCHECK_ALIASDIR" and optionally "LUCHECK_FFDB",
+    "LUCHECK_DEBUG" or "LUCHECK_VERBOSE" to appropriate values.
 <br>
     For example:
 <pre>
-     LUCHECK_CONTROL=/var/qmail/control/locals
      LUCHECK_ALIASDIR=/var/qmail/alias
      LUCHECK_VERBOSE=yes
      export LUCHECK_CONTROL LUCHECK_ALIASDIR LUCHECK_VERBOSE

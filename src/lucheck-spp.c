@@ -29,7 +29,6 @@
 #include <cdb.h>
 #include "commonstuff.h"
 
-#define	ENV_CONTROL	"LUCHECK_CONTROL"
 #define	ENV_ALIAS	"LUCHECK_ALIAS"
 #define	ENV_FFDB	"LUCHECK_FFDB"
 #define	ENV_DEBUG	"LUCHECK_DEBUG"
@@ -81,18 +80,14 @@ static void reject(void) {
 /** Check if the given domain is in the virtualdomains file.
  *  Return the prefix if yes, NULL otherwise.
  */
-static char *is_virtual(char *domain, char *control) {
-char *line, *dot, *vdomains, *success = NULL;
+static char *is_virtual(char *domain) {
+char *line, *dot, *success = NULL, *vdomains;
 int f, eof = 0, dlen = strlen(domain), rc, i, colon;
-
-    vdomains = malloc(strlen(control) + 15);
-    if (!vdomains) { err_memory(); }
-    strcpy(vdomains, control);
-    strcat(vdomains, "/virtualdomains");
 
     line = malloc(dlen + 10);
     if (!line) { err_memory(); }
 
+    vdomains = "control/virtualdomains";
     f = open(vdomains, O_RDONLY);
     if (f < 0) {
 	if (errno != ENOENT) {
@@ -144,29 +139,24 @@ int f, eof = 0, dlen = strlen(domain), rc, i, colon;
     }
 
     free(line);
-    free(vdomains);
     return success;
 }
 
 /** Check if the given domain is in the locals file */
-static int is_local(char *domain, char *control) {
+static int is_local(char *domain) {
 char *line, *dot, *locals;
 int f, eof = 0, dlen = strlen(domain), rc, i, success = 0;
-
-    locals = malloc(strlen(control) + 7);
-    if (!locals) { err_memory(); }
-    strcpy(locals, control);
-    strcat(locals, "/locals");
 
     line = malloc(dlen + 10);
     if (!line) { err_memory(); }
 
+    locals = "control/locals";
     f = open(locals, O_RDONLY);
     if (f < 0) {
 	if (errno != ENOENT) {
 	    err_open(locals);
 	}
-	strcpy(&locals[strlen(control)], "/me");
+	locals = "control/me";
 	f = open(locals, O_RDONLY);
 	if (f < 0) {
 	    err_open(locals);
@@ -204,14 +194,13 @@ int f, eof = 0, dlen = strlen(domain), rc, i, success = 0;
 
     close(f);
     free(line);
-    free(locals);
     return success;
 }
 
 /** main function of the lucheck plugin */
 int main(int argc, char **argv) {
 char *ffdb = getenv(ENV_FFDB), *recipient;
-char *control, *alias, *at, *dotqmail;
+char *alias, *at, *dotqmail;
 int i, rc, alen, rlen;
 struct cdb cdb;
 struct passwd *pw;
@@ -234,7 +223,6 @@ struct stat statbuf;
 	exit(0);
     }
 
-    control = get_required_env(ENV_CONTROL);
     alias = get_required_env(ENV_ALIAS);
     recipient = strdup(get_required_env(ENV_RCPT_TO));
     if (!recipient) { err_memory(); }
@@ -247,11 +235,11 @@ struct stat statbuf;
     at = index(recipient, '@');
     if (at) {
 	char *domain = &at[1];
-	if (is_virtual(domain, control)) {
+	if (is_virtual(domain)) {
 	    DEBUG3("'",recipient,"' is virtual - exiting.")
 	    exit(0);
 	}
-	if (!is_local(domain, control)) {
+	if (!is_local(domain)) {
 	    DEBUG3("'",recipient,"' is not local - exiting.")
 	    exit(0);
 	}
