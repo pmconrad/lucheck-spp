@@ -215,7 +215,7 @@ struct stat statbuf;
 	verbose = debug;
     } else {
 	cmd_reject = (char *) CMD_REJECT;
-	debug = getenv(ENV_VERBOSE);
+	verbose = getenv(ENV_VERBOSE);
     }
 
     if (getenv(ENV_RELAYCLIENT)) {
