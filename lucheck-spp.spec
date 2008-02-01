@@ -2,9 +2,9 @@
 
 Summary: A plugin for qmail-smtpd for checking if recipients can be delivered locally
 Name: lucheck-spp
-Version: 0.2
+Version: 1.0
 Release: 1
-Copyright: P. Conrad <conrad@tivano.de>
+License: GPLv2
 Group: System/Mail
 Source: %{name}-%{version}.tar.gz
 Requires: qmail
@@ -68,6 +68,8 @@ fi
 %{QMAIL_DIR}/plugins/%{name}
 
 %changelog
+* Fri Feb  1 2008 - conrad@tivano.de
+- Version 1.0
 * Mon Apr  4 2005 - conrad@tivano.de
 - Bugfix, version 0.2
 * Wed Sep 29 2004 - conrad@tivano.de
