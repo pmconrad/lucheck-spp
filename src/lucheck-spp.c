@@ -48,12 +48,11 @@ static char *get_required_env(char *name) {
 char *result = getenv(name);
 
     if (!result) {
-	write(STDERR_FILENO, progname, strlen(progname));
-	write(STDERR_FILENO, ": ", 2);
-	write(STDERR_FILENO, ERR_MISSING_VARIABLE,
-	      strlen(ERR_MISSING_VARIABLE));
-	write(STDERR_FILENO, name, strlen(name));
-	write(STDERR_FILENO, "\n", 1);
+	write_error_string(progname);
+	write_error_string(": ");
+	write_error_string(ERR_MISSING_VARIABLE);
+	write_error_string(name);
+	write_error_string("\n");
 	exit(1);
     }
     return result;
@@ -62,13 +61,13 @@ char *result = getenv(name);
 static void err_open(char *file) {
 char *err = strerror(errno);
 
-    write(STDERR_FILENO, progname, strlen(progname));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, ERR_OPEN, strlen(ERR_OPEN));
-    write(STDERR_FILENO, file, strlen(file));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, err, strlen(err));
-    write(STDERR_FILENO, "\n", 1);
+    write_error_string(progname);
+    write_error_string(": ");
+    write_error_string(ERR_OPEN);
+    write_error_string(file);
+    write_error_string(": ");
+    write_error_string(err);
+    write_error_string("\n");
     exit(1);
 }
 

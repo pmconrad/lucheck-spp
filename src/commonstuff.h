@@ -29,33 +29,36 @@ extern char *progname, *debug, *verbose;
 
 #define DEBUG4(m1,m2,m3,m4)	\
     if (debug) { \
-	write(STDERR_FILENO, progname, strlen(progname)); \
-	write(STDERR_FILENO, ": ", 2); \
-	write(STDERR_FILENO, m1, strlen(m1)); \
-	write(STDERR_FILENO, m2, strlen(m2)); \
-	write(STDERR_FILENO, m3, strlen(m3)); \
-	write(STDERR_FILENO, m4, strlen(m4)); \
-	write(STDERR_FILENO, "\n", 1); \
+	write_error_string(progname); \
+	write_error_string(": "); \
+	write_error_string(m1); \
+	write_error_string(m2); \
+	write_error_string(m3); \
+	write_error_string(m4); \
+	write_error_string("\n"); \
     }
 
-#define DEBUG(m)		DEBUG4(m,"","","")
-#define DEBUG2(m1,m2)		DEBUG4(m1,m2,"","")
-#define DEBUG3(m1,m2,m3)	DEBUG4(m1,m2,m3,"")
+#define DEBUG(m)		DEBUG4(m,NULL,NULL,NULL)
+#define DEBUG2(m1,m2)		DEBUG4(m1,m2,NULL,NULL)
+#define DEBUG3(m1,m2,m3)	DEBUG4(m1,m2,m3,NULL)
 
 #define VERBOSE4(m1,m2,m3,m4)	\
     if (verbose) { \
-	write(STDERR_FILENO, progname, strlen(progname)); \
-	write(STDERR_FILENO, ": ", 2); \
-	write(STDERR_FILENO, m1, strlen(m1)); \
-	write(STDERR_FILENO, m2, strlen(m2)); \
-	write(STDERR_FILENO, m3, strlen(m3)); \
-	write(STDERR_FILENO, m4, strlen(m4)); \
-	write(STDERR_FILENO, "\n", 1); \
+	write_error_string(progname); \
+	write_error_string(": "); \
+	write_error_string(m1); \
+	write_error_string(m2); \
+	write_error_string(m3); \
+	write_error_string(m4); \
+	write_error_string("\n"); \
     }
 
-#define VERBOSE(m)		VERBOSE4(m,"","","")
-#define VERBOSE2(m1,m2)		VERBOSE4(m1,m2,"","")
-#define VERBOSE3(m1,m2,m3)	VERBOSE4(m1,m2,m3,"")
+#define VERBOSE(m)		VERBOSE4(m,NULL,NULL,NULL)
+#define VERBOSE2(m1,m2)		VERBOSE4(m1,m2,NULL,NULL)
+#define VERBOSE3(m1,m2,m3)	VERBOSE4(m1,m2,m3,NULL)
+
+/** Safely write the given string to STDERR */
+extern void write_error_string(const char *message);
 
 /** Write the error message for memory problems to stderr and exit with
  *  an error code */

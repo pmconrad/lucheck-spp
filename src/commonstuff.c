@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "commonstuff.h"
 
 #define ERR_MEMORY	"malloc failed: "
@@ -26,15 +27,32 @@
 
 char *progname, *debug = NULL, *verbose = NULL;
 
+/** Safely write the given string to STDERR */
+void write_error_string(const char *message) {
+int bytes;
+
+    if (!message) { return; }
+
+    bytes = strlen(message);
+    while (bytes > 0) {
+	ssize_t written = write(STDERR_FILENO, message, bytes);
+	if (written < 0) {
+	    exit(2);
+	}
+	bytes -= written;
+	message += written;
+    }
+}
+
 /** Write the error message for memory problems to stderr and exit with
  *  an error code */
 void err_memory(void) {
 char *err = strerror(errno);
 
-    write(STDERR_FILENO, progname, strlen(progname));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, ERR_MEMORY, strlen(ERR_MEMORY));
-    write(STDERR_FILENO, err, strlen(err));
+    write_error_string(progname);
+    write_error_string(": ");
+    write_error_string(ERR_MEMORY);
+    write_error_string(err);
     exit(1);
 }
 
@@ -45,13 +63,13 @@ char *err = strerror(errno);
 
     if (fd >= 0) { close(fd); }
 
-    write(STDERR_FILENO, progname, strlen(progname));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, ERR_READ, strlen(ERR_READ));
-    write(STDERR_FILENO, file, strlen(file));
-    write(STDERR_FILENO, ": ", 2);
-    write(STDERR_FILENO, err, strlen(err));
-    write(STDERR_FILENO, "\n", 1);
+    write_error_string(progname);
+    write_error_string(": ");
+    write_error_string(ERR_READ);
+    write_error_string(file);
+    write_error_string(": ");
+    write_error_string(err);
+    write_error_string("\n");
     exit(1);
 }
 
