@@ -22,7 +22,7 @@ lucheck-spp:
 	ln -sf ../src/lucheck-spp
 
 cdbmake:
-	make -C ../cdb-0.75
+	make -C ../cdb-0.75 $@
 	ln -sf ../cdb-0.75/cdbmake
 
 run-tests: lucheck-spp cdbmake
