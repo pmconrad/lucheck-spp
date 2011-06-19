@@ -1,6 +1,6 @@
 /* mfcheck-spp - A qmail-spp plugin for checking envelope sender addresses
  *
- *  Copyright (C) 2004 Peter Conrad <conrad@tivano.de>
+ *  Copyright (C) 2004,2011 Peter Conrad <conrad@tivano.de>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License (version 2) as
