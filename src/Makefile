@@ -25,6 +25,9 @@ all: lucheck-spp
 
 $(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a $(CDB)/alloc.a $(CDB)/buffer.a \
 $(CDB)/uint32.h:
+	rm -f $(CDB)/conf-cc $(CDB)/conf-ld
+	echo "$(CC) $(CFLAGS)" >$(CDB)/conf-cc
+	echo "$(CC) $(LDFLAGS)" >$(CDB)/conf-ld
 	make -C $(CDB) `basename $@`
 
 lucheck-spp.o: lucheck-spp.c $(CDB)/uint32.h
