@@ -1,6 +1,6 @@
 # Toplevel Makefile
 
-VERSION="0.2"
+VERSION="1.0"
 
 BUILDDIR=,,build
 
@@ -12,7 +12,7 @@ all build test: configure
 dist: configure $(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz
 
 $(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz: src/*.[ch] src/Makefile doc/COPYING \
-	  doc/README* doc/TODO test/*.sh test/Makefile Makefile* cdb-0.75 \
+	  doc/README* doc/TODO test/*.sh test/Makefile Makefile* cdb-0.75/* \
 	  test/aliases.cdb lucheck-spp.spec
 	ln -s . $(PROJECT)-$(VERSION)
 	tar cvfz $@ `for i in $^; do echo $(PROJECT)-$(VERSION)/$$i; done`

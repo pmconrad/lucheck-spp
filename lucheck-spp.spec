@@ -2,13 +2,14 @@
 
 Summary: A plugin for qmail-smtpd for checking if recipients can be delivered locally
 Name: lucheck-spp
-Version: 0.2
+Version: 1.0
 Release: 1
-Copyright: P. Conrad <conrad@tivano.de>
-Group: System/Mail
-Source: %{name}-%{version}.tar.gz
+License: GPLv2
+Group: Productivity/Networking/Email/Servers
+URL: http://www.unix-ag.uni-kl.de/~conrad/lucheck/
+Source: http://www.unix-ag.uni-kl.de/~conrad/lucheck/%{name}-%{version}.tar.gz
 Requires: qmail
-BuildRoot: /var/tmp/%{name}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-build
 %description
 This package implements a plugin for D. J. Bernstein's "qmail" MTA 
 (http://qmail.org/ ). It requires qmail to be compiled with the 
@@ -23,16 +24,16 @@ recipient of every incoming email. These checks are currently implemented:
 %setup
 
 %build
-make
+make CFLAGS="%{optflags} -I\$(CDB)" LDFLAGS="%{optflags}" %{?_smp_mflags}
 
 %install
-mkdir -p $RPM_BUILD_ROOT%{QMAIL_DIR}/plugins
-install -m 0755 -s ,,build/src/%{name} $RPM_BUILD_ROOT%{QMAIL_DIR}/plugins
+mkdir -p "%{buildroot}%{QMAIL_DIR}/plugins"
+install -m 0755 -s ",,build/src/%{name}" "%{buildroot}%{QMAIL_DIR}/plugins"
 
 %post
-cd %{QMAIL_DIR}/control
-if [ "$1" -ge 1 -a `grep -c plugins/%{name} smtpplugins` -eq 0 ]; then
-    echo Trying to insert plugin into %{QMAIL_DIR}/control/smtpplugins...
+cd "%{QMAIL_DIR}/control"
+if [ "$1" -ge 1 -a `grep -c "plugins/%{name}" smtpplugins` -eq 0 ]; then
+    echo "Trying to insert plugin into %{QMAIL_DIR}/control/smtpplugins..."
     if grep '^\[rcpt\]$' smtpplugins >/dev/null; then
 	i=1
 	while [ `head -$i smtpplugins | grep -c '^\[rcpt\]$'` -lt 1 ]; do
@@ -52,22 +53,26 @@ fi
 
 %preun
 if [ "$1" = 0 ]; then
-    echo Trying to remove %{name} from %{QMAIL_DIR}/control/smtpplugins...
-    cd %{QMAIL_DIR}/control
+    echo "Trying to remove %{name} from %{QMAIL_DIR}/control/smtpplugins..."
+    cd "%{QMAIL_DIR}/control"
     grep -v '^plugins/%{name}$' smtpplugins >smtpplugins.new && \
       mv smtpplugins.new smtpplugins
 fi
 
 %clean
-[ "$RPM_BUILD_ROOT" = "/" ] || rm -rf "$RPM_BUILD_ROOT"
+[ "%{buildroot}" = "/" ] || rm -rf "%{buildroot}"
 
 %files
-%defattr(-,root,qmail)
+%defattr(-,root,qmail,-)
 %doc doc/*
 %dir %{QMAIL_DIR}/plugins
 %{QMAIL_DIR}/plugins/%{name}
 
 %changelog
+* Sun Jun 19 2011 - conrad@tivano.de
+- Minor modifications
+* Fri Feb  1 2008 - conrad@tivano.de
+- Version 1.0
 * Mon Apr  4 2005 - conrad@tivano.de
 - Bugfix, version 0.2
 * Wed Sep 29 2004 - conrad@tivano.de
