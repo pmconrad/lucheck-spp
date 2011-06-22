@@ -9,6 +9,9 @@ Group: Productivity/Networking/Email/Servers
 URL: http://www.unix-ag.uni-kl.de/~conrad/lucheck/
 Source: http://www.unix-ag.uni-kl.de/~conrad/lucheck/%{name}-%{version}.tar.gz
 Requires: qmail
+%if 0%{?suse_version} >= 1100 && 0%{?suse_version} < 1150
+BuildRequires: licenses
+%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 %description
 This package implements a plugin for D. J. Bernstein's "qmail" MTA 
@@ -25,6 +28,10 @@ recipient of every incoming email. These checks are currently implemented:
 
 %build
 make CFLAGS="%{optflags} -I\$(CDB)" LDFLAGS="%{optflags}" %{?_smp_mflags}
+lic="`md5sum doc/COPYING | cut -d' ' -f 1`"
+if [ -r "/usr/share/doc/licenses/md5/$lic" ]; then
+    ln -sf /usr/share/doc/licenses/md5/"$lic" doc/COPYING
+fi
 
 %install
 mkdir -p "%{buildroot}%{QMAIL_DIR}/plugins"
