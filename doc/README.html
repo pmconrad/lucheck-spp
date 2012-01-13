@@ -1,5 +1,12 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<title>lucheck-spp README</title>
+<style type="text/css">
+* { font-family:Helvetica,Arial,Geneva; }
+body { width:500px; }
+</style>
 </head>
 <body>
 <h1>lucheck-spp - A qmail-spp plugin for checking local users</h1>
@@ -88,7 +95,7 @@ rejected addresses will be logged.
 
 <h2>Status</h2>
 <p>
-The current implementation has been in use on a productive system for several
+The current implementation (with only minor modifications) has been in use on a productive system for several
 years now and can be considered stable.
 </p>
 
@@ -98,7 +105,7 @@ This package should be available at
 <a href="http://www.unix-ag.uni-kl.de/~conrad/lucheck/">http://www.unix-ag.uni-kl.de/~conrad/lucheck/</a>
 </p><p>
 The sources are managed using the
-<a href="http://wiki.gnuarch.org/">GNU Arch</a> revision control
+<a href="http://www.gnu.org/software/gnu-arch/">GNU Arch</a> revision control
 system. You can check out a copy using
 </p>
 <pre>
@@ -159,7 +166,7 @@ well.
      LUCHECK_ALIASDIR=/var/qmail/alias
      LUCHECK_VERBOSE=yes
      export LUCHECK_ALIASDIR LUCHECK_VERBOSE
-     tcpserver -R -v -x /etc/tcprules.smtpd.cdb -c 20 0 smtp qmail-smtpd 2>&1
+     tcpserver -R -v -x /etc/tcprules.smtpd.cdb -c 20 0 smtp qmail-smtpd 2&gt;&amp;1
 </pre>
     Don't forget to restart the service if required!
 </li>
