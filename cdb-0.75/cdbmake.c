@@ -4,6 +4,8 @@
 #include "cdb_make.h"
 #include "cdb.h"
 
+#include <stdio.h>
+
 #define FATAL "cdbmake: fatal: "
 
 char *fn;
@@ -36,7 +38,7 @@ inline void get(char *ch)
 
 static struct cdb_make c;
 
-main(int argc,char **argv)
+int main(int argc,char **argv)
 {
   unsigned int klen;
   unsigned int dlen;

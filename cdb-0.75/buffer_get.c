@@ -2,9 +2,9 @@
 #include "byte.h"
 #include "error.h"
 
-static int oneread(int (*op)(),int fd,char *buf,unsigned int len)
+static ssize_t oneread(ssize_t (*op)(),int fd,char *buf,unsigned int len)
 {
-  int r;
+  ssize_t r;
 
   for (;;) {
     r = op(fd,buf,len);
