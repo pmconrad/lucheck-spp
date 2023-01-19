@@ -28,7 +28,7 @@ void die_readformat(void)
   strerr_die2x(111,FATAL,"unable to read input: bad format");
 }
 
-inline void get(char *ch)
+static void get(char *ch)
 {
   switch(buffer_GETC(buffer_0,ch)) {
     case 0: die_readformat();
