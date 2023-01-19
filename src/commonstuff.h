@@ -69,7 +69,3 @@ extern void err_memory(void);
 extern void err_reading(char *file, int fd);
 
 #endif /* _COMMONSTUFF_H_ */
-
-/* Do not change the following line:
- * arch-tag: ba924322-56f6-401a-97f2-64d6f1962a75
- */

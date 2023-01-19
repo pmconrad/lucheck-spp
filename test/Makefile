@@ -78,5 +78,3 @@ run-tests: lucheck-spp cdbmake
 clean:
 	rm -rf lucheck-spp control[1234]
 
-# Do not change the following line:
-# arch-tag: c23deea8-3210-4fc7-97ff-247520c2bbfa

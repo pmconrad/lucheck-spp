@@ -37,6 +37,3 @@ configure: clean
 	sed 's/^extern int errno.*/#include <errno.h>/' <cdb-0.75/error.h \
 		>$(BUILDDIR)/cdb-0.75/error.h
 
-# Don't change the following line!
-# arch-tag: 276c5abb-b479-44ce-b7fe-06c1dd99089c
-

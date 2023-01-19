@@ -84,7 +84,3 @@ fi
 - Bugfix, version 0.2
 * Wed Sep 29 2004 - conrad@tivano.de
 - Adapted from mfcheck-spp to this project
-
-# Do not change the following line:
-# arch-tag: 26dd308a-26de-416a-ab01-c813f67a42e6
-

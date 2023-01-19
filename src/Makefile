@@ -39,5 +39,3 @@ lucheck-spp: lucheck-spp.o commonstuff.o \
 clean:
 	rm -f lucheck-spp *.o
 
-# Do not change the following line:
-# arch-tag: 1f29998d-0e10-412a-893e-ffcbc78e19da

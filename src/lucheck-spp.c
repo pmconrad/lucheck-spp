@@ -323,7 +323,3 @@ struct stat statbuf;
 
     return 0;
 }
-
-/* Do not change the following line:
- * arch-tag: cc3f1dfa-3073-45cc-bdd4-c2e1355a9df5
- */

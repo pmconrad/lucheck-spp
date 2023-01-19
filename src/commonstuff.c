@@ -72,7 +72,3 @@ char *err = strerror(errno);
     write_error_string("\n");
     exit(1);
 }
-
-/* Do not change the following line:
- * arch-tag: a0e9e2e8-347c-415b-be10-598af7961e27
- */
