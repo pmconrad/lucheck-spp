@@ -11,7 +11,7 @@ all build test: configure
 
 dist: configure $(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz
 
-$(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz: src/*.[ch] src/Makefile doc/COPYING \
+$(BUILDDIR)/$(PROJECT)-$(VERSION).tar.gz: src/*.[ch] src/Makefile LICENSE \
 	  README* doc/TODO test/*.sh test/Makefile Makefile* cdb-0.75/* \
 	  test/aliases.cdb lucheck-spp.spec
 	ln -s . $(PROJECT)-$(VERSION)
