@@ -3,9 +3,9 @@
 #include "byte.h"
 #include "error.h"
 
-static int allwrite(int (*op)(),int fd,char *buf,unsigned int len)
+static ssize_t allwrite(ssize_t (*op)(),int fd,char *buf,unsigned int len)
 {
-  int w;
+  ssize_t w;
 
   while (len) {
     w = op(fd,buf,len);

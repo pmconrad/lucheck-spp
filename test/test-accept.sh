@@ -28,5 +28,3 @@ fi
 
 exit 0
 
-# Do not change the following line:
-# arch-tag: b754d6e5-f433-47e6-b119-7bf1d38f19a0

@@ -1,19 +1,21 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
+#include <unistd.h>
+
 typedef struct buffer {
   char *x;
   unsigned int p;
   unsigned int n;
   int fd;
-  int (*op)();
+  ssize_t (*op)();
 } buffer;
 
 #define BUFFER_INIT(op,fd,buf,len) { (buf), 0, (len), (fd), (op) }
 #define BUFFER_INSIZE 8192
 #define BUFFER_OUTSIZE 8192
 
-extern void buffer_init(buffer *,int (*)(),int,char *,unsigned int);
+extern void buffer_init(buffer *,ssize_t (*)(),int,char *,unsigned int);
 
 extern int buffer_flush(buffer *);
 extern int buffer_put(buffer *,char *,unsigned int);

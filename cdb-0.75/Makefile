@@ -4,14 +4,6 @@ SHELL=/bin/sh
 
 default: it
 
-alloc.a: \
-makelib alloc.o
-	./makelib alloc.a alloc.o
-
-alloc.o: \
-compile alloc.c alloc.h error.h
-	./compile alloc.c
-
 auto-str: \
 load auto-str.o buffer.a unix.a byte.a
 	./load auto-str buffer.a unix.a byte.a 
@@ -68,23 +60,11 @@ compile buffer_put.c buffer.h str.h byte.h error.h
 	./compile buffer_put.c
 
 byte.a: \
-makelib byte_copy.o byte_cr.o str_len.o fmt_ulong.o uint32_unpack.o \
-byte_diff.o uint32_pack.o scan_ulong.o
-	./makelib byte.a byte_copy.o byte_cr.o str_len.o \
-	fmt_ulong.o uint32_unpack.o byte_diff.o uint32_pack.o \
+makelib fmt_ulong.o uint32_unpack.o \
+uint32_pack.o scan_ulong.o
+	./makelib byte.a \
+	fmt_ulong.o uint32_unpack.o uint32_pack.o \
 	scan_ulong.o
-
-byte_copy.o: \
-compile byte_copy.c byte.h
-	./compile byte_copy.c
-
-byte_cr.o: \
-compile byte_cr.c byte.h
-	./compile byte_cr.c
-
-byte_diff.o: \
-compile byte_diff.c byte.h
-	./compile byte_diff.c
 
 cdb.a: \
 makelib cdb.o cdb_hash.o cdb_make.o
@@ -120,8 +100,8 @@ compile cdbget.c exit.h scan.h str.h buffer.h strerr.h cdb.h uint32.h
 	./compile cdbget.c
 
 cdbmake: \
-load cdbmake.o cdb.a alloc.a buffer.a unix.a byte.a
-	./load cdbmake cdb.a alloc.a buffer.a unix.a byte.a 
+load cdbmake.o cdb.a buffer.a unix.a byte.a
+	./load cdbmake cdb.a buffer.a unix.a byte.a
 
 cdbmake-12: \
 warn-auto.sh cdbmake-12.sh conf-home
@@ -269,10 +249,6 @@ setup: \
 it install
 	./install
 
-str_len.o: \
-compile str_len.c str.h
-	./compile str_len.c
-
 strerr_die.o: \
 compile strerr_die.c buffer.h exit.h strerr.h
 	./compile strerr_die.c
@@ -290,8 +266,8 @@ find-systype.sh conf-cc conf-ld trycpp.c x86cpuid.c
 	) | sh > systype
 
 testzero: \
-load testzero.o cdb.a alloc.a buffer.a unix.a byte.a
-	./load testzero cdb.a alloc.a buffer.a unix.a byte.a 
+load testzero.o cdb.a buffer.a unix.a byte.a
+	./load testzero cdb.a buffer.a unix.a byte.a
 
 testzero.o: \
 compile testzero.c uint32.h scan.h strerr.h cdb_make.h buffer.h \

@@ -1,6 +1,6 @@
 #include "uint32.h"
 
-void uint32_pack(char s[4],uint32 u)
+void uint32_pack(char *s,uint32 u)
 {
   s[0] = u & 255;
   u >>= 8;
@@ -10,7 +10,7 @@ void uint32_pack(char s[4],uint32 u)
   s[3] = u >> 8;
 }
 
-void uint32_pack_big(char s[4],uint32 u)
+void uint32_pack_big(char *s,uint32 u)
 {
   s[3] = u & 255;
   u >>= 8;

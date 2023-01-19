@@ -23,7 +23,7 @@ LDFLAGS=-g
 
 all: lucheck-spp
 
-$(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a $(CDB)/alloc.a $(CDB)/buffer.a \
+$(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a $(CDB)/buffer.a \
 $(CDB)/uint32.h:
 	rm -f $(CDB)/conf-cc $(CDB)/conf-ld
 	echo "$(CC) $(CFLAGS)" >$(CDB)/conf-cc
@@ -34,10 +34,8 @@ lucheck-spp.o: lucheck-spp.c $(CDB)/uint32.h
 
 lucheck-spp: lucheck-spp.o commonstuff.o \
 	     $(CDB)/cdb.a $(CDB)/byte.a $(CDB)/unix.a \
-	     $(CDB)/alloc.a $(CDB)/buffer.a
+	     $(CDB)/buffer.a
 
 clean:
 	rm -f lucheck-spp *.o
 
-# Do not change the following line:
-# arch-tag: 1f29998d-0e10-412a-893e-ffcbc78e19da

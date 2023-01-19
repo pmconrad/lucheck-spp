@@ -2,13 +2,16 @@
 
 Summary: A plugin for qmail-smtpd for checking if recipients can be delivered locally
 Name: lucheck-spp
-Version: 1.0
+Version: 1.0.1
 Release: 1
 License: GPLv2
 Group: Productivity/Networking/Email/Servers
 URL: http://www.unix-ag.uni-kl.de/~conrad/lucheck/
 Source: http://www.unix-ag.uni-kl.de/~conrad/lucheck/%{name}-%{version}.tar.gz
 Requires: qmail
+%if 0%{?suse_version} >= 1100 && 0%{?suse_version} < 1150
+BuildRequires: licenses
+%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 %description
 This package implements a plugin for D. J. Bernstein's "qmail" MTA 
@@ -25,6 +28,10 @@ recipient of every incoming email. These checks are currently implemented:
 
 %build
 make CFLAGS="%{optflags} -I\$(CDB)" LDFLAGS="%{optflags}" %{?_smp_mflags}
+lic="`md5sum doc/COPYING | cut -d' ' -f 1`"
+if [ -r "/usr/share/doc/licenses/md5/$lic" ]; then
+    ln -sf /usr/share/doc/licenses/md5/"$lic" doc/COPYING
+fi
 
 %install
 mkdir -p "%{buildroot}%{QMAIL_DIR}/plugins"
@@ -69,6 +76,8 @@ fi
 %{QMAIL_DIR}/plugins/%{name}
 
 %changelog
+* Thu Jan 19 2023 - conrad@tivano.de
+- Minor modifications
 * Sun Jun 19 2011 - conrad@tivano.de
 - Minor modifications
 * Fri Feb  1 2008 - conrad@tivano.de
@@ -77,7 +86,3 @@ fi
 - Bugfix, version 0.2
 * Wed Sep 29 2004 - conrad@tivano.de
 - Adapted from mfcheck-spp to this project
-
-# Do not change the following line:
-# arch-tag: 26dd308a-26de-416a-ab01-c813f67a42e6
-

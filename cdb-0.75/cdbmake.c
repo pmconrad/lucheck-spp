@@ -4,6 +4,8 @@
 #include "cdb_make.h"
 #include "cdb.h"
 
+#include <stdio.h>
+
 #define FATAL "cdbmake: fatal: "
 
 char *fn;
@@ -26,7 +28,7 @@ void die_readformat(void)
   strerr_die2x(111,FATAL,"unable to read input: bad format");
 }
 
-inline void get(char *ch)
+static void get(char *ch)
 {
   switch(buffer_GETC(buffer_0,ch)) {
     case 0: die_readformat();
@@ -36,7 +38,7 @@ inline void get(char *ch)
 
 static struct cdb_make c;
 
-main(int argc,char **argv)
+int main(int argc,char **argv)
 {
   unsigned int klen;
   unsigned int dlen;
